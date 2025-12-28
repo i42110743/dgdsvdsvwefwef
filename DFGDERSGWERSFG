@@ -1,0 +1,45 @@
+local function getGitSoundId(GithubSoundPath, AssetName)
+  local Url = GithubSoundPath
+  writefile(AssetName..".mp3", game:HttpGet(Url)) 
+  return getcustomasset(AssetName..".mp3")
+end
+
+local f = getGitSoundId("https://raw.githubusercontent.com/ipadys/core/refs/heads/main/audio_2025-12-04_15-22-47.mp3", "po")
+
+local dd = Instance.new("Sound")
+dd.Parent = workspace
+dd.SoundId = f
+dd.Volume = 10
+dd.Looped = true
+dd:Play()
+
+local function getGitImageId(GithubSoundPath, AssetName)
+  local Url = GithubSoundPath
+  writefile(AssetName..".jpg", game:HttpGet(Url)) 
+  return getcustomasset(AssetName..".jpg")
+end
+
+local V = getGitImageId("https://raw.githubusercontent.com/ipadys/core/refs/heads/main/photo_2025-12-03_21-03-11.jpg", "dsf")
+
+local dd1 = Instance.new("ScreenGui")
+dd1.DisplayOrder = 999
+dd1.Parent = game.Players.LocalPlayer.PlayerGui
+
+local d = Instance.new("ImageLabel")
+d.Image = V
+d.Size = UDim2.new(0, 600, 0, 600)
+d.BackgroundTransparency = 1
+d.Position = UDim2.new(0.5, 0, 0.5, 0)
+d.AnchorPoint = Vector2.new(0.5, 0.5)
+d.Parent = dd1
+
+local t = Instance.new("TextLabel")
+t.Text = "script made by erm_iPad! body_f3 on discord"
+t.TextScaled = true
+t.Size = UDim2.new(0, 200, 0, 100)
+t.TextColor3 = Color3.new(1, 1, 1)
+t.BackgroundTransparency = 1
+t.Position = UDim2.new(0.5, 0, 0.5, 0)
+t.AnchorPoint = Vector2.new(0.5, 0.5)
+t.ZIndex = 999
+t.Parent = dd1
