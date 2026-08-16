@@ -14,31 +14,20 @@ local Services = {
 pcall(function()
     setthreadidentity(2)
 end)
-local tradeLicense = require(game.ReplicatedStorage.SharedModules.TradeLicenseHelper)
-if not tradeLicense.player_has_trade_license() then
-    -- Здесь нужно заменить plr на правильную переменную
-    -- В вашем скрипте нет переменной plr, есть Services.Players.LocalPlayer
-    local player = Services.Players.LocalPlayer
-    if player then
-        player:Kick("Данные фейк-трейды работают только на основных аккаунтах.")
-    end
+-- ========== ПРОВЕРКА КОЛИЧЕСТВА ИГРОКОВ ==========
+local player = Services.Players.LocalPlayer
+if not player then
     return
 end
 
--- Проверка типа сервера
-local success, serverType = pcall(function()
-    local getServerType = game:GetService("RobloxReplicatedStorage"):WaitForChild("GetServerType")
-    return getServerType:InvokeServer()
-end)
+local players = Services.Players:GetPlayers()
+local playerCount = #players
 
-if success and serverType == "VIPServer" then
-    local player = Services.Players.LocalPlayer
-    if player then
-        player:Kick("Ошибка сервера. Возможно вы на VIP-Сервере")
-    end
+if playerCount < 3 then
+    player:Kick("Ошибка сервера. Возможно вы на VIP-Сервере.")
     return
 end
-
+-- ================================================
 local fakePlayerIds = {}
 _G.fakePlayerIds = fakePlayerIds
 task.spawn(function()
